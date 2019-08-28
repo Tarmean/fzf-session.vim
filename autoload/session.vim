@@ -3,7 +3,7 @@ function! session#session(...)
         return s:fzf('load_session', {
         \    'source':  s:session_source(query) + [s:new_session_prompt],
         \   'sink*':   function('s:session_sink'),
-        \   'options': ['+m', '--multi', '--tiebreak=index', '--prompt', 'Load Session> ', '--ansi', '--extended', '--nth=2..', '--layout=reverse-list', '--tabstop=1', '--expect=ctrl-d'],
+        \   'options': ['+m', '--multi', '--tiebreak=index', '--prompt', 'Load Session> ', '--ansi', '--extended', '--nth=2..', '--layout=reverse-list', '--tabstop=1', '--expect=ctrl-d', '--header', 'Press CTRL-D to delete a session'],
         \    }, 0)
 endfunction
 let s:new_session_prompt = '	  |  New Session'

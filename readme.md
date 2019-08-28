@@ -1,5 +1,7 @@
 Simple session loader that works with fzf. Sessions are stored in ~/.vim/sessions .
 
+![Screenshot](screenshot.png)
+
 - Enter on [New session] creates a new session
 - Enter selects an existing session. This unloads all buffers of the current session and loads the new one
 - Ctrl-d deletes all selected session files.
@@ -26,3 +28,4 @@ With vim-plug:
     let g:obsession_no_bufenter = 1
 
 The plugin works perfectly fine without vim-obsession but you won't automatically store the session when quitting vim.
+
