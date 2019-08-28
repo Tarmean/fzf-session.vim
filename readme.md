@@ -24,3 +24,5 @@ With vim-plug:
     Plug 'tpope/vim-obsession'
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' }
     let g:obsession_no_bufenter = 1
+
+The plugin works perfectly fine without vim-obsession but you won't automatically store the session when quitting vim.
