@@ -13,8 +13,11 @@ endfunction
 function! session_utils#load_session(session)
     call s:unload_session()
     try
-        call s:load_session(session)
+        call s:load_session(a:session)
     endtry
+endfunc
+function! s:unload_session()
+    bufdo! bd
 endfunc
 function! s:save_old_session()
     if exists('g:this_obsession') && get(g:, 'obsession_no_bufenter', v:false)
@@ -45,9 +48,9 @@ function! s:pause_obsession()
         unlet g:this_obsession
     endif
 endfunc
-function! s:load_session()
+function! s:load_session(session_name)
     try
-        exec "source " . fnameescape(a:session_name)
+        exec "source " . a:session_name
     catch
         echom "Error in session: " . v:errmsg
         call getchar()
