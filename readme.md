@@ -23,3 +23,4 @@ With vim-plug:
     Plug 'Tarmean/fzf-session.vim'
     Plug 'tpope/vim-obsession'
     Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' }
+    let g:obsession_no_bufenter = 1
