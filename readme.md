@@ -29,3 +29,20 @@ With vim-plug:
 
 The plugin works perfectly fine without vim-obsession but you won't automatically store the session when quitting vim.
 
+## Note:
+
+Whe using SessionLoad to switch we
+
+- unload all current buffers
+- close all windows 
+- wipe all terminals
+
+If you have any unsaved buffers this pauses with the unsaved buffers loaded. Save or bd! the unsaved buffers and repeat your action.
+
+The unloaded state is restored when reloading our old session. However we only get new terminal buffers instead of restoring whatever was running in them.
+
+If you want to keep terminal buffers open when switching sessions use
+
+    let g:session#unload_old_sessions = 0
+
+vim will still save empty terminal buffers into session files, though, so this will create increase the amount of open terminal buffers with each session switch.
