@@ -1,8 +1,8 @@
 if !exists('g:session#unload_old_sessions')
     let g:session#unload_old_sessions = v:true
 endif
-if !exists('g:session#wipe_terminals')
-    let g:session#wipe_terminals = v:true
+if !exists('g:session#save_terminals')
+    let g:session#save_terminals = v:false
 endif
 function! session_utils#synchronize_session(bang, session)
     let session = fnameescape(a:session)
@@ -58,12 +58,7 @@ function! s:unload_session(bang)
         if !is_loaded || (bufnr == last_buf) || !is_listed
             continue
         endif
-        if  buf_name !~# '^term://'
-            exec "silent bd" bufnr
-        elseif exists('g:session#wipe_terminals') && g:sessions#wipe_terminals
-            let bufnr = b['bufnr']
-            exec "bd!" bufnr 
-        endif
+        exec "silent bd" bufnr
     endfor
 endfunc
 function! s:save_old_session()
@@ -126,6 +121,7 @@ function! s:pause_obsession()
 endfunc
 function! s:load_session(session_name)
     try
+        call s:mutate_session(a:session_name)
         exec "source " . a:session_name
     catch
         echom "Error in session: " . v:errmsg
@@ -139,4 +135,13 @@ endfunction
 function! s:unpause_obsession(session_name)
     let g:this_obsession = a:session_name
     let v:this_session = a:session_name
+endfunction
+function! s:mutate_session(session_name)
+    if !exists('g:session#save_terminals') || 'g:session#save_terminals'
+        return
+    endif
+    let lines = readfile(a:session_name)
+    let command = "substitute(v:val, '". 'badd .* term:\/\/.*' . "', '\" terminal load deleted by fzf-session.vim', 'g')"
+    call map(lines, command)
+    call writefile(lines, a:session_name)
 endfunction

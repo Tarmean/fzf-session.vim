@@ -34,13 +34,12 @@ The plugin works perfectly fine without vim-obsession but you won't automaticall
 Whe using SessionLoad to switch we
 
 - unload all current buffers
-- close all windows 
-- wipe all terminals
+- unload all buffers 
 
-If you have any unsaved buffers they are left loaded.
+If you have any unsaved buffers, including terminals, they are left loaded.
 
-Terminal buffers can't be restored so it would be sensible to give them the same treatment. But neovim recreates terminal buffers as empty when opening a terminal session so if we switch between sessions a bunch we get an exponential count of terminal buffers.
+Terminal buffers can't be restored in a real way - instead we just reopen the program they were started with. Leaving all existing terminals open and reloading all old ones causes exponential terminal buffers when switching between sessions repeatedly.
 
-As a band aid fix terminals are killed when switching sessions. To avoid this behavior use:
+As a band aid fix we change sessions to not save terminal buffers. You can disable this with:
 
-    let g:session#unload_old_sessions = 0
+    let g:session#save_terminals = v:true
