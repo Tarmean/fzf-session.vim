@@ -1,8 +1,9 @@
-function! session#session(...)
+function! session#session(bang, ...)
         let [query, args] = (a:0 && type(a:1) == type('')) ? [a:1, a:000[1:]] : ['', a:000]
+        let callback = a:bang ? 's:session_sink_bang' : 's:session_sink_nobang'
         return s:fzf('load_session', {
         \    'source':  s:session_source(query) + [s:new_session_prompt],
-        \   'sink*':   function('s:session_sink'),
+        \   'sink*':   function(callback),
         \   'options': ['+m', '--multi', '--tiebreak=index', '--prompt', 'Load Session> ', '--ansi', '--extended', '--nth=2..', '--layout=reverse-list', '--tabstop=1', '--expect=ctrl-d', '--header', 'Press CTRL-D to delete a session'],
         \    }, 0)
 endfunction
@@ -69,7 +70,13 @@ function! s:extract_name(line)
     let session_idx = str2nr(split(a:line, "\t", 1)[1])
     return s:session_paths[session_idx-1]
 endfunc
-function! s:session_sink(input)
+function! s:session_sink_bang(input)
+    call s:session_sink('!', a:input)
+endfunc
+function! s:session_sink_nobang(input)
+    call s:session_sink('', a:input)
+endfunc
+function! s:session_sink(bang, input)
   if len(a:input) != 2 
       return
   endif
@@ -83,7 +90,7 @@ function! s:session_sink(input)
       endif
       let session_name = s:parse_session_name(lines[0])
       if !empty(session_name)
-          call session_utils#synchronize_session(session_name)
+          call session_utils#synchronize_session(a:bang, session_name)
       end
   elseif action == 'ctrl-d'
       for line in lines

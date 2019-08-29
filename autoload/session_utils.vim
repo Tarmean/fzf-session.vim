@@ -4,13 +4,22 @@ endif
 if !exists('g:session#wipe_terminals')
     let g:session#wipe_terminals = v:true
 endif
-function! session_utils#synchronize_session(session)
+function! session_utils#synchronize_session(bang, session)
     let session = fnameescape(a:session)
+
+    let should_load_file = s:should_load_session(session)
+    if should_load_file == 'abort'
+        return
+    elseif should_load_file == 'pause'
+        call s:pause_obsession()
+        return
+    endif
+
     call s:save_old_session()
     call s:pause_obsession()
     try
-        if s:should_load_session(session)
-            call session_utils#load_session(session)
+        if should_load_file == 'yes'
+            call session_utils#load_session(a:bang, session)
         endif
         call s:mksession(session)
         call s:unpause_obsession(session)
@@ -19,27 +28,41 @@ function! session_utils#synchronize_session(session)
         call getchar()
     endtry
 endfunction
-function! session_utils#load_session(session)
-    call s:unload_session()
+function! session_utils#load_session(bang, session)
+    call s:unload_session(a:bang)
     try
         call s:load_session(a:session)
     catch
-        echom v:errmsg
+        echom 'error in loading: ' . v:errmsg
         call getchar()
     endtry
 endfunc
-function! s:unload_session()
-    if !g:session#unload_old_sessions
+function! s:unload_session(bang)
+    if !exists('g:session#unload_old_sessions') || empty(g:session#unload_old_sessions)
         return
     endif
+    if (tabpagenr('$') > 1)
+        execute 'tabonly' . a:bang
+    endif
+    if winnr('$') > 1
+        execute 'only' . a:bang
+    endif
+    execute 'enew' . a:bang
+    let last_buf = bufnr('')
     for b in getbufinfo()
-        if !b.loaded
+        let g:last = b
+        let bufnr = b['bufnr']
+        let buf_name = b['name']
+        let is_listed = b['name']
+        let is_loaded = b['name']
+        if !is_loaded || (bufnr == last_buf) || !is_listed
             continue
         endif
-        if b.name !~# '^term://'
-            exec b.bufnr . " bd"
-        elseif g:session#wipe_terminals
-            exec b.bufnr . "bufdo bd!"
+        if  buf_name !~# '^term://'
+            exec "silent bd" bufnr
+        elseif exists('g:session#wipe_terminals') && g:sessions#wipe_terminals
+            let bufnr = b['bufnr']
+            exec "bd!" bufnr 
         endif
     endfor
 endfunc
@@ -50,16 +73,29 @@ function! s:save_old_session()
 endfunction
 function! s:should_load_session(session)
     if !filereadable(a:session)
-        return v:false
+        let def = "no"
+    else
+        let def = "yes"
     endif
     let state = session_utils#state_of_session(a:session)
     if state == "synchronized"
-        return v:false
+        let answer = confirm('Session is already active:', "&Pause\n&Cancel") 
+        if answer == 1
+            return "pause"
+        else
+            return "no"
+        endif
     elseif state == "paused"
-        return  input('Reload session from file? y/n: ') =~? 'y\%[es]'
-    else
-        return v:true
+        let answer = confirm('Session is paused:', "&Load from file\n&Resume\n&Cancel") 
+        if answer == 1
+            return def
+        elseif answer == 2
+            return "no"
+        else
+            return "abort"
+        endif
     endif
+    return def
 endfunction
 function! session_utils#delete_session(session)
     let session = fnameescape(a:session)

@@ -1,2 +1,2 @@
-command!      SessionLoad                   call session#session()
+command! -bang     SessionLoad                   call session#session('<bang>')
 

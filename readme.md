@@ -37,12 +37,10 @@ Whe using SessionLoad to switch we
 - close all windows 
 - wipe all terminals
 
-If you have any unsaved buffers this pauses with the unsaved buffers loaded. Save or bd! the unsaved buffers and repeat your action.
+If you have any unsaved buffers they are left loaded.
 
-The unloaded state is restored when reloading our old session. However we only get new terminal buffers instead of restoring whatever was running in them.
+Terminal buffers can't be restored so it would be sensible to give them the same treatment. But neovim recreates terminal buffers as empty when opening a terminal session so if we switch between sessions a bunch we get an exponential count of terminal buffers.
 
-If you want to keep terminal buffers open when switching sessions use
+As a band aid fix terminals are killed when switching sessions. To avoid this behavior use:
 
     let g:session#unload_old_sessions = 0
-
-vim will still save empty terminal buffers into session files, though, so this will create increase the amount of open terminal buffers with each session switch.
