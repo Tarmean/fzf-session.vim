@@ -2,7 +2,7 @@ if !exists('g:session#unload_old_sessions')
     let g:session#unload_old_sessions = v:true
 endif
 if !exists('g:session#save_terminals')
-    let g:session#save_terminals = v:false
+    let g:session#save_terminals = v:true
 endif
 function! session_utils#synchronize_session(bang, session)
     let session = fnameescape(a:session)
@@ -129,7 +129,7 @@ function! s:load_session(session_name)
     endtry
 endfunc
 function! s:mksession(session_name)
-    exec "mksession! " . fnameescape(a:session_name)
+    exec "mksession! " . a:session_name
     let v:this_session = a:session_name
 endfunction
 function! s:unpause_obsession(session_name)

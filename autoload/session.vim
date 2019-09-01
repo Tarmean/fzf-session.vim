@@ -33,9 +33,9 @@ function! s:format_session_line(idx, str)
     return printf(fmt_str,s:get_session_type(a:str), a:idx+1, name, mod_time)
 endfunction
 function! s:get_session_type(str)
-    if (exists('g:this_obsession') && fnameescape(a:str) == fnameescape(g:this_obsession))
+    if (exists('g:this_obsession') && fnameescape(a:str) == g:this_obsession)
         return '*'
-    elseif (fnameescape(v:this_session) == fnameescape(a:str))
+    elseif (v:this_session == fnameescape(a:str))
         return 'P'
     else
         return ' '
