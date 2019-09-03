@@ -74,7 +74,7 @@ function! s:should_load_session(session)
     endif
     let state = session_utils#state_of_session(a:session)
     if state == "synchronized"
-        let answer = confirm('Session is already active:', "&Pause\n&Cancel") 
+        let answer = confirm('Session is already active:', "&Pause\n&Save") 
         if answer == 1
             return "pause"
         else
