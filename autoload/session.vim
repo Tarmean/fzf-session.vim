@@ -105,9 +105,15 @@ endfunc
 
 
 
+function! s:compare_times(b, a)
+    let ta = getftime(a:a)
+    let tb = getftime(a:b)
+    return ta == tb ? 0 : ta > tb ? 1 : -1
+endfunc
 function! s:session_source(patt)
     let cur_session = get(g:, 'this_obsession', v:this_session)
     let s:session_paths = split(globpath(g:session_dir, '*.vim'), '\n')
+    let s:session_paths = sort(s:session_paths, "s:compare_times")
     let paths = copy(s:session_paths)
     let formatted = map(paths, 's:format_session_line(v:key, v:val)')
     return formatted
