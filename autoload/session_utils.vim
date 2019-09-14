@@ -121,7 +121,7 @@ function! s:pause_obsession()
 endfunc
 function! s:load_session(session_name)
     try
-        call s:mutate_session(a:session_name)
+        " call s:mutate_session(a:session_name)
         exec "source " . a:session_name
     catch
         echom "Error in session: " . v:errmsg
