@@ -28,6 +28,10 @@ function! session_utils#synchronize_session(bang, session)
         call getchar()
     endtry
 endfunction
+function! session_utils#empty_session(bang)
+    call s:pause_obsession()
+    call s:unload_session(a:bang)
+endfunc
 function! session_utils#load_session(bang, session)
     call s:unload_session(a:bang)
     try

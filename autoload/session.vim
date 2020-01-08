@@ -101,6 +101,9 @@ function! s:session_sink(bang, input)
           call session_utils#delete_session(session_name)
       endfor
   endif
+  try
+      silent! unlet g:SessionLoad
+  endtry
 endfunc
 
 
