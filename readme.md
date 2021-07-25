@@ -2,6 +2,13 @@ Simple session loader that works with fzf. Sessions are stored in ~/.vim/session
 
 ![Screenshot](screenshot.png)
 
+Commands:
+
+    :SessionLoad
+        interactively load a session
+    :SessionUnload
+        finish the session and unload all saved files
+
 - Enter on [New session] creates a new session
 - Enter selects an existing session. This unloads all buffers of the current session and loads the new one
 - Ctrl-d deletes all selected session files.
