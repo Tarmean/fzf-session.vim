@@ -34,6 +34,4 @@ The plugin works perfectly fine without vim-obsession but you won't automaticall
 Whe using SessionLoad to switch we unload all current buffers. Unsaved buffers, including terminals, are left loaded.
 
 Terminal buffer loading is a somewhat unsolvable problem - instead neovim just reopens the program the terminal was started with.  
-Since terminals are both left open and reopened this creates exponential terminal buffers when reloading repeatedly so be sure to close the unused ones.
-
-There is code in place to edit session files and remove terminal buffers but there are some subtle edge cases so it is disabled for now.
+Since terminals are both left open and reopened this would create exponential terminal buffers when reloading repeatedly. To fix this issue, terminals are filtered out of session files. When unloading sessions, terminals and unsaved buffers are left open.
