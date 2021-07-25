@@ -11,7 +11,7 @@ Commands:
 
 - Enter on [New session] creates a new session
 - Enter selects an existing session. This unloads all buffers of the current session and loads the new one
-- Ctrl-d deletes all selected session files.
+- Ctrl-d deletes the selected session file(s)
 
 If you want to run this in your vimrc on startup you need some slight trickery:
 
