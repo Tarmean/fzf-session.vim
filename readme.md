@@ -1,4 +1,4 @@
-Simple session loader that works with fzf. Sessions are stored in ~/.vim/sessions .
+Simple session loader that works with fzf. Sessions are stored in ~/.vim/sessions . Make sure this directory exists!
 
 ![Screenshot](screenshot.png)
 

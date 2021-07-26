@@ -133,6 +133,9 @@ function! s:load_session(session_name)
     endtry
 endfunc
 function! s:mksession(session_name)
+    if !filereadable(g:session_dir)
+        throw "Sessions are stored in '" . g:session_dir . "' . Please create this directory or change g:session_dir"
+    endif
     exec "mksession! " . a:session_name
     let v:this_session = a:session_name
 endfunction

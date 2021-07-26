@@ -91,6 +91,8 @@ function! s:session_sink(bang, input)
       let session_name = s:parse_session_name(lines[0])
       if !empty(session_name)
           call session_utils#synchronize_session(a:bang, session_name)
+      else
+          echom "Empty session name"
       end
   elseif action == 'ctrl-d'
       for line in lines
