@@ -17,16 +17,11 @@ function! session_utils#synchronize_session(bang, session)
 
     call s:save_old_session()
     call s:pause_obsession()
-    try
-        if should_load_file == 'yes'
-            call session_utils#load_session(a:bang, session)
-        endif
-        call s:mksession(session)
-        call s:unpause_obsession(session)
-    catch
-        echom v:errmsg
-        call getchar()
-    endtry
+    if should_load_file == 'yes'
+        call session_utils#load_session(a:bang, session)
+    endif
+    call s:do_mksession(session)
+    call s:unpause_obsession(session)
 endfunction
 function! session_utils#empty_session(bang)
     call s:pause_obsession()
@@ -34,12 +29,7 @@ function! session_utils#empty_session(bang)
 endfunc
 function! session_utils#load_session(bang, session)
     call s:unload_session(a:bang)
-    try
-        call s:load_session(a:session)
-    catch
-        echom 'error in loading: ' . v:errmsg
-        call getchar()
-    endtry
+    call s:load_session(a:session)
 endfunc
 function! s:unload_session(bang)
     if !exists('g:session#unload_old_sessions') || empty(g:session#unload_old_sessions)
@@ -67,7 +57,7 @@ function! s:unload_session(bang)
 endfunc
 function! s:save_old_session()
     if exists('g:this_obsession') && get(g:, 'obsession_no_bufenter', v:false)
-        call s:mksession(g:this_obsession)
+        call s:do_mksession(g:this_obsession)
     endif
 endfunction
 function! s:should_load_session(session)
@@ -124,16 +114,11 @@ function! s:pause_obsession()
     endif
 endfunc
 function! s:load_session(session_name)
-    try
-        call s:mutate_session(a:session_name)
-        exec "source " . a:session_name
-    catch
-        echom "Error in session: " . v:errmsg
-        call getchar()
-    endtry
+    call s:mutate_session(a:session_name)
+    exec "source " . a:session_name
 endfunc
-function! s:mksession(session_name)
-    if !filereadable(g:session_dir)
+function! s:do_mksession(session_name)
+    if !exists("g:session_dir") || !isdirectory(g:session_dir)
         throw "Sessions are stored in '" . g:session_dir . "' . Please create this directory or change g:session_dir"
     endif
     exec "mksession! " . a:session_name
