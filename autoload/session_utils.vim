@@ -129,11 +129,11 @@ function! s:unpause_obsession(session_name)
     let v:this_session = a:session_name
 endfunction
 function! s:mutate_session(session_name)
-    if !exists('g:session#save_terminals') || 'g:session#save_terminals'
+    if g:session#save_terminals
         return
     endif
     let lines = readfile(a:session_name)
-    let command = "substitute(v:val, '". 'badd .* term:\/\/.*' . "', '\" terminal load deleted by fzf-session.vim', 'g')"
+    let command = "substitute(v:val, 'if bufexists(fnamemodify(\"term://.*\"', '\" terminal load deleted by fzf-session.vim', 'g')"
     call map(lines, command)
     call writefile(lines, a:session_name)
 endfunction
