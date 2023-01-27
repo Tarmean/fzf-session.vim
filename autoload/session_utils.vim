@@ -2,7 +2,7 @@ if !exists('g:session#unload_old_sessions')
     let g:session#unload_old_sessions = v:true
 endif
 if !exists('g:session#save_terminals')
-    let g:session#save_terminals = v:true
+    let g:session#save_terminals = v:false
 endif
 function! session_utils#synchronize_session(bang, session)
     let session = fnameescape(a:session)
